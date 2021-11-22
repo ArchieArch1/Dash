@@ -32,9 +32,7 @@ void ADA_PlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	
 	if(InputComponent)
-	{
-		
-		
+	{				
 		//Bind the axis which are set in Project Settings-> Engine-> Input.
 		//BindAxis and Action functions bind a delegate function. The same as binding an event with a function from another object
 		InputComponent->BindAxis("MoveForward", this, &ADA_PlayerController::MoveForward);
@@ -98,18 +96,13 @@ void ADA_PlayerController::ToggleSprint()
 
 void ADA_PlayerController::Dash()
 {	
+	float LerpTime = 0.9f;
+	float CurrentTime = 0.0f;
+	float Delta = GetWorld()->GetDeltaSeconds();
+	
 	const FVector Forward = GetPawn()->GetActorForwardVector();
 	DACharacter->CharacterMovement->AddImpulse(Forward * DashForce, true);
 
 	DACharacter->DashAudioComponent->Play();
-	
-	float LerpTime = 0.9f;
-	float CurrentTime = 0.0f;
-	float Delta = GetWorld()->GetDeltaSeconds();
-
-	while (CurrentTime < LerpTime)
-	{
-		DACharacter->CameraComponent->SetFieldOfView(FMath::Lerp(DefaultFOV, DashFOV, CurrentTime / LerpTime));
-		CurrentTime += Delta;
-	}
+	FMath::FInterpTo(DefaultFOV, DashFOV, Delta, LerpSpeed);
 }

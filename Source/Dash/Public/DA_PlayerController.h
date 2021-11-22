@@ -39,7 +39,10 @@ public:
 	float DefaultFOV = 90.0f;
 
 	UPROPERTY(EditAnywhere)
-	float DashFOV = 200.0f;
+	float DashFOV = 120.0f;
+
+	UPROPERTY(EditAnywhere)
+	float LerpSpeed = 1.0f;
 	
 	UFUNCTION()
 	void MoveForward(float axisInput);
