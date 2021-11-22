@@ -21,12 +21,6 @@ void ADA_PlayerController::BeginPlay()
 	DACharacter = Cast<ADA_Character>(GetCharacter());
 }
 
-/*void ADA_Character::Tick(float DeltaTime)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}*/
-
-
 void ADA_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -54,7 +48,7 @@ void ADA_PlayerController::SetupInputComponent()
 void ADA_PlayerController::MoveForward(float AxisInput)
 {
 	//Set the maximum walk speed to be the movement speed which is exposed to the editor
-	DACharacter->CharacterMovement->MaxWalkSpeed = FMovementSpeed;
+	//DACharacter->CharacterMovement->MaxWalkSpeed = FMovementSpeed;
 	
 	// Find out which way is "forward" and record that the player wants to move that way
 	FRotator const ControlSpaceRot = GetControlRotation();
@@ -96,13 +90,5 @@ void ADA_PlayerController::ToggleSprint()
 
 void ADA_PlayerController::Dash()
 {	
-	float LerpTime = 0.9f;
-	float CurrentTime = 0.0f;
-	float Delta = GetWorld()->GetDeltaSeconds();
-	
-	const FVector Forward = GetPawn()->GetActorForwardVector();
-	DACharacter->CharacterMovement->AddImpulse(Forward * DashForce, true);
-
-	DACharacter->DashAudioComponent->Play();
-	FMath::FInterpTo(DefaultFOV, DashFOV, Delta, LerpSpeed);
+	DACharacter->Dash();
 }

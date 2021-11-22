@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Sound/SoundCue.h"
@@ -25,26 +24,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	/*// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	UFUNCTION()
-	void MoveForward(float axisInput);
-
-	UFUNCTION()
-	void MoveRight(float axisInput);
-
-	UFUNCTION()
-	void ToggleSprint();
-
-	UFUNCTION()
-	void StartJump();
-
-	UFUNCTION()
-	void StopJump();
-
-	UFUNCTION()
-	void Dash();*/
+	void Dash();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* CameraComponent;
@@ -57,6 +38,37 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UAudioComponent* DashAudioComponent;
-		
+	
 	UCharacterMovementComponent* CharacterMovement = GetCharacterMovement();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Force Variables")
+	float DashForce = 500;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterMovementVariables")
+	float DashAccelerationDifference = 1500;
+
+	UPROPERTY(EditAnywhere)
+	float DefaultFOV = 90.0f;
+
+	UPROPERTY(EditAnywhere)
+	float DashFOV = 130.0f;
+
+	UPROPERTY(EditAnywhere)
+	float DashLength = 0.5f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LerpTime = 0.1;
+
+private:
+	UPROPERTY()
+	float CurrentTime = 0.0f;
+
+	UPROPERTY()
+	bool bCanLerp = false;
+
+	UPROPERTY()
+	bool bDashing = false;
+
+	UPROPERTY()
+	bool bLerpToDefault = false;
 };

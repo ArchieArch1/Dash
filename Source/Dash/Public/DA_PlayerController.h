@@ -34,15 +34,6 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	float BaseTurnRate = 90.0f;
-
-	UPROPERTY(EditAnywhere)
-	float DefaultFOV = 90.0f;
-
-	UPROPERTY(EditAnywhere)
-	float DashFOV = 120.0f;
-
-	UPROPERTY(EditAnywhere)
-	float LerpSpeed = 1.0f;
 	
 	UFUNCTION()
 	void MoveForward(float axisInput);
@@ -67,9 +58,6 @@ public:
 
 	UFUNCTION()
 	void Dash();
-
-	UPROPERTY(EditAnywhere, Category = "Force Variables")
-	float DashForce = 10000;
 	
 protected:
 

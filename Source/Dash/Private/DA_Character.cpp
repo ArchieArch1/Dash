@@ -37,76 +37,66 @@ void ADA_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
+	//Start lerping FOV for dash if bool is set to true
+	if(bCanLerp)
+	{
+		if(CurrentTime < LerpTime)
+		{
+			CameraComponent->SetFieldOfView(FMath::Lerp(DefaultFOV, DashFOV, CurrentTime / LerpTime));
+			CurrentTime += DeltaTime;
 
-/*// Called to bind functionality to input
-void ADA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+			//FOV lerp done, wait before lerping back to default
+			if(CurrentTime >= LerpTime)
+			{
+				CurrentTime = 0.0f;
+				bCanLerp = false;
+				bDashing = true;
+			}
+		}
+	}
 
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	
-	//Bind the axis which are set in Project Settings-> Engine-> Input.
-	//BindAxis and Action functions bind a delegate function. The same as binding an event with a function from another object
-	PlayerInputComponent->BindAxis("MoveForward", this, &ADA_Character::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ADA_Character::MoveRight);	
+	//Player is dashing, wait before lerping back to default
+	if(bDashing)
+	{
+		if(CurrentTime < DashLength)
+		{
+			CurrentTime += DeltaTime;
+		}
 
-	//AddControllerYawInput & AddControllerYawPitch are methods inbuilt to the default Character class 
-	PlayerInputComponent->BindAxis("Turn", this, &ADA_Character::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &ADA_Character::AddControllerPitchInput);
+		if(CurrentTime >= DashLength)
+		{
+			CurrentTime = 0.0f;
+			bDashing = false;
+			bLerpToDefault = true;
+		}
+	}
 
-	// Set up action bindings
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ADA_Character::StartJump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ADA_Character::StopJump);
-	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ADA_Character::ToggleSprint);
+	//Dash ended, lerp fov back to default
+	if(bLerpToDefault)
+	{
+		if(CurrentTime < LerpTime)
+		{
+			CameraComponent->SetFieldOfView(FMath::Lerp(DashFOV, DefaultFOV, CurrentTime / LerpTime));
+			CurrentTime += DeltaTime;
+		}
 
-	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ADA_Character::Dash);
+		if(CurrentTime >= LerpTime)
+		{
+			CharacterMovement->MaxWalkSpeed -= DashForce;
+			CharacterMovement->MaxAcceleration -= DashAccelerationDifference;
+			bLerpToDefault = false;
+			CurrentTime = 0.0f;
+		}
+	}
 
-}*/
-
-/*void ADA_Character::MoveForward(float AxisInput)
-{
-	//Set the maximum walk speed to be the movement speed which is exposed to the editor
-	CharacterMovement->MaxWalkSpeed = FMovementSpeed;
-	
-	// Find out which way is "forward" and record that the player wants to move that way
-	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, AxisInput);
-}
-
-void ADA_Character::MoveRight(float AxisInput)
-{
-	const FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, AxisInput);
-}
-
-void ADA_Character::StartJump()
-{
-	
-}
-
-void ADA_Character::StopJump()
-{
-	
-}
-
-void ADA_Character::ToggleSprint()
-{
-	
 }
 
 void ADA_Character::Dash()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Dash"));
-
-	const FVector Forward = GetActorForwardVector();
-	CharacterMovement->AddImpulse(Forward * DashForce, true);
-
-	CameraComponent->SetFieldOfView(120);
-}*/
-
-
+	CharacterMovement->MaxWalkSpeed += DashForce;
+	CharacterMovement->MaxAcceleration += DashAccelerationDifference;
+	bCanLerp = true;
+}
 
 
 
