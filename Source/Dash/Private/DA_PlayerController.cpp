@@ -75,12 +75,18 @@ void ADA_PlayerController::Turn(float axisInput)
 
 void ADA_PlayerController::StartJump()
 {
-	
+	if(GetCharacter())
+	{
+		GetCharacter()->Jump();
+	}
 }
 
 void ADA_PlayerController::StopJump()
 {
-	
+	if(GetCharacter())
+	{
+		GetCharacter()->StopJumping();
+	}
 }
 
 void ADA_PlayerController::ToggleSprint()

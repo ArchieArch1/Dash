@@ -6,6 +6,7 @@
 #include "Components/AudioComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ADA_Character::ADA_Character()
@@ -28,8 +29,14 @@ ADA_Character::ADA_Character()
 	DashSoundCue = DashCue.Object;
 
 	DashAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudioComponent"));
-	DashAudioComponent->bAutoActivate = true;
 	DashAudioComponent->SetupAttachment(RootComponent);
+	DashAudioComponent->bAutoActivate = false;
+	DashAudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
+	if(DashSoundCue->IsValidLowLevelFast())
+	{
+		DashAudioComponent->SetSound(DashSoundCue);
+	}
 }
 
 // Called every frame
@@ -93,9 +100,11 @@ void ADA_Character::Tick(float DeltaTime)
 
 void ADA_Character::Dash()
 {
+	DashAudioComponent->Play();
 	CharacterMovement->MaxWalkSpeed += DashForce;
 	CharacterMovement->MaxAcceleration += DashAccelerationDifference;
 	bCanLerp = true;
+	
 }
 
 
